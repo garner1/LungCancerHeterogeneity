@@ -20,13 +20,16 @@ usage:
 	@echo "       make inputVcf=fullpath2vcfPrefix variant_filter"
 	@echo "       make inputVcf=fullpath2vcf variant_effect_predictor"
 	@echo "       make inputPrefix=fullPath2bam features_count"
+	@echo "       make inputbam=fullpath2bam preseq"
+	@echo "       make inputbam=fullpath2bam outdir=outputDir qualimap"
+
 
 demultiplex:
 	mkdir -p $(out)
 	bcl2fastq -i $(baseCalls) -R $(rawDataDir) -o $(out) --no-lane-splitting --tiles s_[3]
 
 preprocessing:
-	fastp -i $(R1) -I $(R2) -o $(R1.fastp.gz) -O $(R2.fastp.gz) -h $(sampleID).report.html
+	fastp -i $(R1) -I $(R2) -o $(R1.fastp.gz) -O $(R2.fastp.gz) -h $(sampleID).report.html -j $(sampleID).report.json
 
 align:
 	mkdir -p ${datadir}
@@ -70,3 +73,9 @@ variant_effect_predictor:
 
 features_count:
 	featureCounts -p -t exon -g gene_id -a ${GTF} -o $(inputPrefix).counts.txt $(inputPrefix).dedup.sorted.bam
+
+preseq:
+	preseq c_curve -v -pe -bam $(inputbam) -o $(inputbam).preseq.txt -l 3000000000
+
+qualimap:
+	qualimap bamqc -bam $(inputbam) --java-mem-size=3G -gff ${GTF} -outdir $(outdir)
