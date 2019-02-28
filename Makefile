@@ -22,8 +22,17 @@ usage:
 	@echo "       make inputPrefix=fullPath2bam features_count"
 	@echo "       make inputbam=fullpath2bam preseq"
 	@echo "       make inputbam=fullpath2bam outdir=outputDir qualimap"
+	@echo "       make bamfilePrefix=fullpathPrefix varscan"
 
-
+varscan:
+	echo "[`date`]: Start running varscan ... "
+	samtools mpileup -f ${REF} $(bamfilePrefix).dedup.sorted.bam > $(bamfilePrefix).mpileup
+	varscan mpileup2snp $(bamfilePrefix).mpileup > $(bamfilePrefix).varscan.snp
+	varscan mpileup2indel $(bamfilePrefix).mpileup > $(bamfilePrefix).varscan.indel
+	varscan filter $(bamfilePrefix).varscan.snp --indel-file $(bamfilePrefix).varscan.indel --output-file $(bamfilePrefix).varscan.snp.filter
+	varscan filter $(bamfilePrefix).varscan.indel --output-file $(bamfilePrefix).varscan.indel.filter
+	varscan readcounts $(bamfilePrefix).mpileup > $(bamfilePrefix).mpileup.readcounts
+	echo "[`date`]: Done with varscan ... "
 demultiplex:
 	mkdir -p $(out)
 	bcl2fastq -i $(baseCalls) -R $(rawDataDir) -o $(out) --no-lane-splitting --tiles s_[3]
