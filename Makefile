@@ -31,7 +31,7 @@ varscan:
 	varscan mpileup2indel $(bamfilePrefix).mpileup > $(bamfilePrefix).varscan.indel
 	varscan filter $(bamfilePrefix).varscan.snp --indel-file $(bamfilePrefix).varscan.indel --output-file $(bamfilePrefix).varscan.snp.filter
 	varscan filter $(bamfilePrefix).varscan.indel --output-file $(bamfilePrefix).varscan.indel.filter
-	varscan readcounts $(bamfilePrefix).mpileup > $(bamfilePrefix).mpileup.readcounts
+	varscan readcounts $(bamfilePrefix).mpileup --output-file $(bamfilePrefix).mpileup.readcounts
 	echo "[`date`]: Done with varscan ... "
 demultiplex:
 	mkdir -p $(out)
