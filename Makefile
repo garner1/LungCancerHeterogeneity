@@ -23,6 +23,10 @@ usage:
 	@echo "       make inputbam=fullpath2bam preseq"
 	@echo "       make inputbam=fullpath2bam outdir=outputDir qualimap"
 	@echo "       make bamfilePrefix=fullpathPrefix varscan"
+	@echo "       make samplename=S01 bamfilePrefix=fullpathPrefix vardict"
+
+vardict:
+	vardict -G ${REF} -N $(samplename) -b $(bamfilePrefix).dedup.sorted.bam -z -c 1 -S 2 -E 3 -g 4 ${target_exome} | teststrandbias.R | var2vcf_valid.pl -N $(samplename) -E
 
 varscan:
 	echo "[`date`]: Start running varscan ... "
@@ -33,6 +37,7 @@ varscan:
 	varscan filter $(bamfilePrefix).varscan.indel --output-file $(bamfilePrefix).varscan.indel.filter
 	varscan readcounts $(bamfilePrefix).mpileup --output-file $(bamfilePrefix).mpileup.readcounts
 	echo "[`date`]: Done with varscan ... "
+
 demultiplex:
 	mkdir -p $(out)
 	bcl2fastq -i $(baseCalls) -R $(rawDataDir) -o $(out) --no-lane-splitting --tiles s_[3]
