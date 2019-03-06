@@ -26,7 +26,7 @@ usage:
 	@echo "       make samplename=S01 bamfilePrefix=fullpathPrefix vardict"
 
 vardict:
-	vardict -G ${REF} -N $(samplename) -b $(bamfilePrefix).dedup.sorted.bam -z -c 1 -S 2 -E 3 -g 4 ${target_exome} | teststrandbias.R | var2vcf_valid.pl -N $(samplename) -E
+	vardict -G ${REF} -N $(samplename) -b $(bamfilePrefix).dedup.sorted.bam -z -c 1 -S 2 -E 3 -g 4 ${target_exome} | teststrandbias.R | var2vcf_valid.pl -N $(samplename) -E > $(bamfilePrefix).vardict.vcf
 
 varscan:
 	echo "[`date`]: Start running varscan ... "
