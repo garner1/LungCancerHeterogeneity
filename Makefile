@@ -50,15 +50,15 @@ align:
 	bwa mem -v 1 -t ${numbproc} ${REF} $(R1) $(R2) | samtools sort -T $(exp) > ${datadir}/$(exp).bam
 
 dedup:	
-	umi_tools dedup -I $(prefix).bam  --paired -S $(prefix).dedup.bam --umi-separator=: \
+	/usr/local/share/anaconda2/bin/umi_tools dedup -I $(prefix).bam  --paired -S $(prefix).dedup.bam --umi-separator=: \
 	--edit-distance-threshold 2 -L $(prefix).log --output-stats=$(prefix)
 	samtools sort -@ 8 $(prefix).dedup.bam > $(prefix).dedup.sorted.bam
 
 dedup_parallel:				#parallelize wrt chromosomes...much faster
-	umi_tools dedup --chrom $(chrom) -I $(prefix).bam --paired -S $(prefix).$(chrom).dedup.bam --umi-separator=: \
-	--edit-distance-threshold 2 -L $(prefix).$(chrom).log --output-stats=$(prefix).$(chrom)
-	samtools merge -@ 24 $(prefix).dedup.bam $(prefix).$(chrom).dedup.bam
-	samtools sort -@ 8 $(prefix).dedup.bam > $(prefix).dedup.sorted.bam
+	/usr/local/share/anaconda2/bin/umi_tools dedup --chrom $(chrom) -I $(prefix).bam --paired -S $(prefix).$(chrom).dedup.bam \
+	--umi-separator=: --edit-distance-threshold 2 -L $(prefix).$(chrom).log --output-stats=$(prefix).$(chrom)
+	# samtools merge -@ 24 $(prefix).dedup.bam $(prefix).$(chrom).dedup.bam
+	# samtools sort -m 10G -@ 8 $(prefix).dedup.bam > $(prefix).dedup.sorted.bam
 
 varcall_mpileup:
 	samtools mpileup -uvf ${REF} $(bamfilePrefix).dedup.sorted.bam | bcftools call -vm -Ov > $(bamfilePrefix).mpileup.vcf
