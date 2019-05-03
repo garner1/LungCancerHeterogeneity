@@ -56,7 +56,7 @@ dedup:
 
 dedup_parallel:				#parallelize wrt chromosomes...much faster
 	/usr/local/share/anaconda2/bin/umi_tools dedup --chrom $(chrom) -I $(prefix).bam --paired -S $(prefix).$(chrom).dedup.bam \
-	--umi-separator=: --edit-distance-threshold 2 -L $(prefix).$(chrom).log 
+	--umi-separator=: --no-sort-output -L $(prefix).$(chrom).log 
 	# samtools merge -@ 24 $(prefix).dedup.bam $(prefix).$(chrom).dedup.bam
 	# samtools sort -m 10G -@ 8 $(prefix).dedup.bam > $(prefix).dedup.sorted.bam
 
